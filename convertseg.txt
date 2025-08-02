@@ -1,0 +1,16 @@
+import supervision as sv
+import numpy as np
+
+def convertsegs(video_segments):
+    predicted={}
+    for keyframe in video_segments.keys():
+        listxyxy=[];listobj=[];
+        for keyobj in video_segments[keyframe].keys():
+            ys, xs = np.where(video_segments[keyframe][keyobj].astype(bool))
+            if len(xs) > 0 and len(ys) > 0:
+                x1 = np.min(xs);y1=np.min(ys);x2 = np.max(xs);y2=np.max(ys);
+                listxyxy.append([x1,y1,x2,y2]);
+                listobj.append(keyobj)
+    
+        predicted.update({keyframe:{'xyxy':np.asarray(listxyxy),'tracker_id':listobj}})
+    return predicted
